@@ -1,0 +1,24 @@
+.tmp
+.divshot-cache
+.sass-cache
+npm-debug.log
+node_modules
+dist
+
+# =========================
+# Windows and Mac detritus
+# =========================
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Windows folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+$RECYCLE.BIN
+
+# Mac desktop service store files
+.DS_Store

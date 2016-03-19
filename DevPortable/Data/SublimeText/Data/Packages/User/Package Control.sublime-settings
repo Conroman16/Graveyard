@@ -1,0 +1,12 @@
+{
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"LESS",
+		"Markdown Extended",
+		"Package Control",
+		"PowerShell"
+	]
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spectrum Colorpicker</title>
+		<link rel="stylesheet" type="text/css" href="css/style.dark.css">
+		<link rel="stylesheet" type="text/css" href="spectrum/spectrum.css">
+		<style type="text/css">
+			body{
+				background-color:#484848;
+				padding:1em;
+			}
+			.cp-background{
+				background-color:#E9E9E9;
+				border:1px solid #222222;
+				border-radius:4px;
+			}
+			.cp-background:hover{
+				border:1px solid #FF9B08;
+			}
+			.cp-background input{
+				background-color:#FFFFFF;
+			}
+			.cp-replacer{
+				border:1px solid #222222;
+				color:black;
+			}
+			.cp-replacer:hover{
+				border:1px solid #FF9B08;
+			}
+			.sp-dd{
+				color:black;
+			}
+			#cp-wrap #cp{
+				position:absolute;
+			}
+			#cp-wrap{
+				min-width:378px;
+				min-height:245px;
+				width:38.256%;
+				margin:0 30.872%;
+				padding:2%;
+			}
+			#outputDiv{
+				border:1px solid red;
+				width:20%;
+				height:8em;
+				margin:0 40%;
+			}
+		</style>
+		<script type="text/javascript" src="js/jqmin.js"></script>
+		<script type="text/javascript" src="spectrum/spectrum.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#cp").spectrum({
+					color: "#25507E",
+					flat: true,
+					allowEmpty: true,
+					showAlpha: true,
+					cancelText: "cancel",
+					chooseText: "Pick",
+					showInput: true,
+					showInitial: true,
+					showSelectionPalette: true,
+					localStorageKey: "spectrum.homepage",
+					clickoutFiresChange: true,
+					showPalette: true,
+					palette: [
+						['#000000', '#222222', '#444444', '#666666', '#888888', '#aaaaaa', '#cdcdcd', '#ffffff'],
+						['#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#0000ff', '#9900ff', '#ff00ff'],
+						['#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#cfe2f3', '#d9d2e9', '#ead1dc'],
+						['#dd736b', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#9fc5e8', '#b4a7d6', '#d5a6bd'],
+						['#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#6fa8dc', '#8e7cc3', '#c27ba0'],
+						['#a61c00', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#3d85c6', '#674ea7', '#a64d79'],
+						['#5b0f00', '#660000', '#783f04', '#7f6000', '#274e13', '#073763', '#20124d', '#4c1130']
+					],
+					containerClassName: "cp-background",
+					replacerClassName: "cp-replacer"
+				});
+				
+				$(".sp-choose").click(function(){
+					$("#outputDiv").spectrum("set", $(".sp-input").val());
+				});
+				
+			});
+		</script>
+	</head>
+	<body>
+		<div id="cp-container">
+			<div id="cp-wrap">
+				<input type="text" id="cp">
+			</div>
+		</div>
+		<div id="outputDiv">
+			
+		</div>
+	</body>
+</html>

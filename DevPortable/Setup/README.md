@@ -1,0 +1,4 @@
+## Setup
+Even though this is a completely portable NodeJS envirionment, the %DEVPORTABLE% environment variable needs to be available from the shell if you wish to use the filesystem shortcuts.
+
+This environment variable can be set by running the `SetEnvironmentVariable.ps1` script and providing path to the DevPortable repo root directory.  If you get an error when executing the script, go into the `ExecutionPolicySetters` folder and double-click on the setter of your choice.  The default execution policy for standalone Windows 7+ is `RemoteSigned` and the default for domain-joined Windows 7+ is `Restricted` unless otherwise specified by Group Policy.  To ensure the script functions correctly, I'd recommend running PowerShell as 'Administrator' and set the execution policy to Unrestricted (`SetExecutionPolicyUnrestricted.reg`).  Once that's done, you can set it back to whatever.

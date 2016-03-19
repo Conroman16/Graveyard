@@ -1,0 +1,32 @@
+<script>
+    var socket = io();
+    socket.on('liveStream', function(url) {
+    	if (app.loading){
+    		app.hideLoading();
+    		$('#stream').css('display', 'initial');
+    	}
+    	$('#stream').attr('src', url);
+    	$('.start').css('display', 'none');
+    });
+    socket.on('loadingStream', function(){
+    	app.showLoading('#stream-wrap');
+    });
+    socket.on('close', function(){
+    	alert('Socket closed!');
+    });
+    function startStream() {
+      socket.emit('start-stream');
+      $('.start').hide();
+    }
+  </script>
+
+<h1 class="text-center">RPiStream</h1>
+<hr>
+<div class="center">
+  <button type="button" id="start-btn" class="btn btn-success start" onclick="startStream()">Start Stream</button>
+</div>
+<div id="stream-wrap" class="center">
+  <img src="" id="stream" alt="Loading..." style="display:none;">
+</div>
+<br>
+<br>

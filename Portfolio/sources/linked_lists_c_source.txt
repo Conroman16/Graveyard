@@ -1,0 +1,123 @@
+/* Connor Kennedy
+ * cjkmt9
+ * 12368995
+ * CS 2050
+ * Lab 4
+ * 9/18/13
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
+typedef struct node{
+	int value;
+	struct node* next;
+}Node;
+
+/* Prototypes */
+Node* insert_end(Node* head, int data);
+void print_list(Node* head);
+int search(Node* head, int data);
+void factorial_list(Node* head);
+void delete_list(Node* head);
+int factorial(int n);
+
+int main(int argc, char** argv){
+	if (argc < 2 || argc > 2){  //check if correct number of args are supplied
+		printf("\nINSUFFICIENT ARGUMENTS!\n\n");
+		return 0;
+	}
+	if (argv[1] == NULL){  //checks if input file can be opened
+		printf("\nCANNOT OPEN INPUT FILE!\n\n");
+		return 0;
+	}
+	FILE *in = fopen(argv[1], "r");
+	Node* head;  //declare head
+	int data;  //declare data
+	while(!feof(in)){  //read data from file and build list
+		fscanf(in, "%d", &data);
+		head = insert_end(head, data);
+	}
+	fclose(in);  //close input file
+	printf("\nLIST:\n-----\n");
+	print_list(head); //print list
+	printf("NULL\n");
+	int searchVal;
+	printf("\nEnter a value to search for: ");  //get value for search
+	scanf("%d", &searchVal);
+	if (search(head, searchVal) == 1)
+		printf("\n%d was found!\n", searchVal);
+	else
+		printf("\n%d was NOT found!\n", searchVal);
+
+	factorial_list(head);  //get factorials from the list
+	printf("\nFACTORIAL OF LIST:\n------------------\n");
+	print_list(head);  //print list again
+	printf("NULL\n\n");
+	delete_list(head);  //delete list
+  return 1;
+}
+
+Node* insert_end(Node* head, int data){
+	if (head == NULL){  //if head is null, make space for it
+		head = malloc(sizeof(Node));  //make space for node
+		head->value = data;  //place new data in node
+		head->next = NULL;  //set next = null
+		return head;
+	}
+	else{
+		head->next = insert_end(head->next, data);  //set head->next = next node in list
+		return head;
+	}
+}
+
+int factorial(int n){
+	if (n <= 1)  //if 1, return 1
+		return 1;
+	else  //if not 1, continue recursion
+		return n * factorial(n - 1);
+}
+
+void print_list(Node* head){
+	if (head ==  NULL)  //base case
+		return;
+	else{
+		print_list(head->next);  //recursive call
+		printf("%d -> ", head->value);  //print value
+		return;
+	}
+}
+
+void factorial_list(Node* head){
+	if (head == NULL){  //base case
+		return;
+	}
+	else{
+		factorial_list(head->next);  //recursive call
+		head->value = factorial(head->value); //get factorial of value
+		return;
+	}
+}
+
+int search(Node* head, int data){
+	if (head == NULL){  //base case
+		return 0;
+	}
+	if(head->value == data){
+		return 1;
+	}
+	return search(head->next, data);
+	
+}
+
+void delete_list(Node* head){
+	if (head == NULL)  //base case
+		return;
+	else{
+		delete_list(head->next);  //recursive call
+		free(head);  //delete node
+		return;
+	}
+}

@@ -1,0 +1,344 @@
+/* Connor Kennedy
+ 
+* cjkmt9
+ 
+* 12368995
+ 
+* 7/8/2013
+ 
+* Homework 3
+ 
+*/
+
+
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+#include <time.h>
+
+#define MAX 100
+
+#define NUM_BOMB 40  /* THIS IS THE PERCENTAGE OF BOMBS IN THE PLAYING GRID */
+
+#define NUM_AB 2  /* THIS VALUE IS THE NUMBER OF ANTI-BOMBS IN THE GRID */
+
+#define NUM_TURNS 5  /* THIS VALUE IS THE NUMBER OF TURNS TO COMPLETE BEFORE WINNING */
+
+
+
+//prototypes
+
+void set_bomb(int);
+
+void set_antibomb(int);
+
+void initialize_grid(int);
+
+void display_grid(char [][MAX], int);
+
+int error_check(int x, int y, int n);
+
+int check_position(int x, int y);
+
+
+
+//global arrays
+char disp[MAX][MAX];
+
+char play[MAX][MAX];
+
+
+
+main(void) {
+
+	srand(time(NULL));  //seed random number generator
+
+	int size=0, x=0, y=0, i=0, ab=0, check=0;
+	
+printf("\nEnter the grid size: ");
+
+	while(1) {  //error check loop
+
+		scanf("%d", &size);
+
+		if (size < 0 || size > MAX)
+
+			printf("INVALID INPUT! Please enter a number between 0 and %d: ", MAX);
+
+		else
+
+			break;
+	}
+
+	initialize_grid(size);  //initialize the grid to the specified size
+
+	set_bomb(size);  //initialize playing grid
+
+	set_antibomb(size);  //set anti bombs (to adjust number, change NUM_AB)
+
+	for (i=0; i<NUM_TURNS; i++) {  //turns loop
+
+		while(1) {  //coordinate check loop
+
+			printf("\nEnter the x position for tank: ");  //get x position
+
+			scanf("%d", &x);
+
+			printf("Enter the y position for tank: ");
+
+			scanf("%d", &y);
+
+			if (error_check(x, y, size) == 1)  //break if all correct
+
+				break;
+
+			else
+
+				printf("INVALID POSITION TO MOVE THE TANK!\n");
+
+		}
+		check = check_position(x, y);
+
+		switch(check) {  //check playing position
+
+			case 1: {  //bomb
+
+				if (ab != 1) {  //if bomb
+
+					play[x][y] = '$';  //place current tank location in playing grid
+
+					disp[x][y] = '+';  //place + on display grid
+
+					display_grid(disp, size);  //print display grid
+
+					printf("\n\tTank was bombed.\n\tYou lost the game.\n\n\n\tPLAYING GRID\n\t------------\n");
+
+					display_grid(play, size);  //print playing grid
+
+					printf("\tKEY:\n\t----\n\t# = Free space\n\t@ = Bomb\n\t& = Anti-bomb\n\t$ = Current tank position\n\n\n");
+
+					return 0;  //end program because tank was bombed
+
+				}
+
+				else {
+
+					printf("\n\tTank was bombed but anti-bomb saved it.\n");
+
+					disp[x][y] = '+';  //set space to tank location marker
+
+					break;
+
+				}
+
+			}
+
+			case 2: {  //anti bomb
+
+				printf("\n\tAnti-bomb collected\n");
+
+				ab = 1;  //set anti bomb to true
+
+				disp[x][y] = '+';  //set space to talk location marker
+
+				break;
+
+			}
+
+			case 3: {  //free space
+
+				disp[x][y] = '+';  //set space to tank location marker
+
+				printf("\n\tSuccessful turn!\n");
+
+				break;
+
+			}
+
+		}
+
+		display_grid(disp, size);  //print display grid
+
+		
+/* display_grid(play, size);  //print playing grid for debugging purposes */
+
+	}
+
+	printf("\nCONGRATULATIONS! You won the game.\nTank survived all the bomb attacks.\n\n");  //if program gets to here, print game winning message
+
+	printf("\n\n\t  PLAYING GRID\n\t  ------------\n");
+
+	display_grid(play, size);  //show playing grid
+
+	printf("\n");
+
+  return 0;
+
+}
+
+
+
+void initialize_grid(int size) {  //initialize display grid
+
+	int i=0, j=0;
+
+	for (i=0; i<size; i++) {
+
+		for (j=0; j<size; j++) {
+
+			disp[i][j] = '#';  //initialize display array with # signs
+
+		}
+
+	}
+
+}
+
+
+
+void set_bomb(int size) {  //initialize playing grid and set bombs
+
+	int i=0, j=0, rnd=0;
+
+	for (i=0; i<size; i++) {
+
+		for (j=0; j<size; j++) {
+
+			rnd = rand() % 10;
+
+			if (rnd < (NUM_BOMB / 10))  //if within the 40% place a bomb (@)
+
+				play[i][j] = '@';
+
+			else  //if not within the 40% place an open space (#)
+
+				play[i][j] = '#';
+
+		}
+
+	}
+
+}
+
+
+
+void set_antibomb(int size) {  //set anti-bombs on playing grid
+
+	int x=0, y=0, i=0;
+
+	while(1) {
+
+		x = rand() % size;  //random x coordinate
+
+		y = rand() % size;  //random y coordinate
+
+		if (play[x][y] == '#') {  //if the space is open, place the antibomb
+
+			play[x][y] = '&';
+
+			i++;  //incirment counter
+
+		}
+
+		if (i == NUM_AB) //if counter is equal to the number of desired antibombs, break the loop
+
+			break;
+
+	}
+
+}
+
+
+
+int error_check(int x, int y, int n) {
+
+	if (x >= 0 && x < n) {  //if x is on the grid, check y
+
+		if (y >= 0 && y < n) {  //if y is on the playing grid, check if space has been previously selected
+
+			if (disp[x][y] != '+') {  //if space has not been previously selected, return all true
+
+				return 1;
+
+			}
+
+		}
+
+	}
+
+	else
+
+		return 0;  //if one of the criteria is not met, return false
+
+}
+
+
+
+int check_position(int x, int y) {
+
+	switch (play[x][y]) {  //check what character is in the specified x,y position
+
+		case '@': {  //if bomb, return 1
+
+			return 1;
+
+		}
+
+		case '&': {  //if anti-bomb, return 2
+
+			return 2;
+
+		}
+
+		default: {  //if other, return 3
+
+			return 3;
+
+		}
+
+	}
+
+}
+
+
+
+void display_grid(char grid[][MAX], int size) {  //prints out the grid that is sent to it with row and column labels
+
+	int i=0, j=0, k=0;
+
+	printf("\n\t  ");
+
+	for (k=0; k<size; k++) {  //print col labels
+
+		printf("%d ", k);
+
+	}
+
+	printf("\n\t  ");
+
+	for (k=0; k<((size * 2)-1); k++) {  //print lines below col labels
+
+		printf("_");
+
+	}
+
+	printf("\n");  //move down for first line of grid
+
+	for (i=0; i<size; i++) {
+
+		printf("\t%d|", i);  //print row labels
+
+		for (j=0; j<size; j++) {
+
+			printf("%c ", grid[i][j]);  //print actual values
+
+		}
+
+		printf("\n");  //move to a new line
+
+	}
+	printf("\n");  //add space at the bottom
+
+}

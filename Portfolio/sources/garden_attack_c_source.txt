@@ -1,0 +1,296 @@
+/* Connor Knnedy
+ * 12368995
+ * Garden Attack
+ */
+
+#include <stdio.h>
+#define SIZE 10
+#define RUN 5
+//function prototypes
+void initGarden(char garden[][10]);//fills the 2D array, randomly assigns characters at each spot
+void printGarden(char garden[][10]);//prints the characters of the 2D array
+int getCoordinate();//gets user input, checks validity
+char getFlower();//print out flower choices and get user choice, checks validity
+int searchSurroundings(char garden[][10], int x, int y);//used when bomb blossom explodes and dies. Searches the 8 spaces surrounding the space [x][y], changes to @'s
+int placeFlower(char garden[][10]);//deals with the flower, bug attacks, flower dying, awarding points
+
+int total_points = 0, points = 0; //global variable for points
+
+int main()
+{
+        srand(time(NULL));
+        int plays; //counter for running program and total points
+        char array[SIZE][SIZE];//create
+        initGarden(array);//initialize array
+        printf("\n\t\tGARDEN GAME!\n");
+        //begin game
+        for(plays = 0; plays < RUN; ++plays)
+        {
+                printf("\t\t[ROUND %d]\n\n", plays+1);//print round number
+                printGarden(array);//print garden
+                points = placeFlower(array);//accumulate points
+                //total_points += points;
+        }
+        printGarden(array);//print final outcome of garden
+        printf("Total Points: %d\n\n", total_points);//print final accumulation
+return 0;
+}
+
+void initGarden(char garden[][10])
+{
+        int i, j;//counters
+        for(i = 0; i < SIZE; i++)
+        {
+                for(j = 0; j < SIZE; j++)
+                {
+                        if(rand() % 11 > 3)
+                                garden[i][j] = ',';//poor soil
+                        else
+                                garden[i][j] = '#';//good soil
+                }
+        }
+}
+
+void printGarden(char garden[][10])
+{
+        int i, j;//counters
+        printf("\t  0 1 2 3 4 5 6 7 8 9\n\t ----------------------\n");//print header
+        for(i = 0; i < SIZE; i++)//rows
+        {
+                printf("\t%d|", i);//print row numbers
+                for(j = 0; j < SIZE; j++)//columns
+                        printf("%c ", garden[i][j]);//print characters for garden
+                printf("|\n");//right edge
+        }
+                printf("\t ----------------------\n");//bottom line
+}
+
+int getCoordinate()
+{
+        int coordinate;
+        while(1)
+        {
+                scanf("%d", &coordinate);
+                if(coordinate >= 0 && coordinate < SIZE)
+                        return coordinate;
+                else
+                        printf("Invalid Choice. Try again: ");
+        }
+}
+
+char getFlower()
+{
+        char flower;
+        while(1)
+        {
+                scanf("%c", &flower);//scan user input
+                if(flower == 'M' || flower == 'B' || flower == 'R')
+                        break;
+                else
+                        printf("Invalid Choice.  Please re-enter choice: ");
+        }
+}
+
+int searchSurroundings(char garden[][10], int x, int y)
+{
+        int i, j;//counters
+        points = 0; //reset points
+        for(i = (x-1); i < (x+1); i++)
+        {
+                for (j=(y-1); j<(y+1); j++)
+        	{
+            		if (garden[i][j] == 'M' || garden[i][j] == 'R' || garden[i][j] == 'B')
+                		points -= 1;
+                		total_points -= 1;
+        	}
+   	}
+        if(x < 1 && y < 1)
+        {
+            garden[x][y+1] = '@';
+            garden[x+1][y+1] = '@';
+            garden[x+1][y] = '@';
+        }
+	else if(x < 1 && y > 8)
+        {
+            garden[x][y-1] = '@';
+            garden[x+1][y-1] = '@';
+            garden[x+1][y-1] = '@';
+        }
+        else if(x > 8 && y < 1)
+        {
+            garden[x-1][y] = '@';
+            garden[x-1][y+1] = '@';
+            garden[x][y+1] = '@';
+        }
+        else if(x > 8 && y > 8)
+        {
+            garden[x][y-1] = '@';
+            garden[x-1][y-1] = '@';
+            garden[x-1][y] = '@';
+        }
+        else if(x < 1)
+        {
+            garden[x][y-1] = '@';
+            garden[x+1][y-1] = '@';
+            garden[x+1][y] = '@';
+            garden[x+1][y+1] = '@';
+            garden[x][y+1] = '@';
+        }
+        else if(x > 8)
+        {
+            garden[x][y-1] = '@';
+            garden[x-1][y-1] = '@';
+            garden[x-1][y] = '@';
+            garden[x-1][y+1] = '@';
+            garden[x][y+1] = '@';
+        }
+        else if(y < 1)
+        {
+            garden[x][y-1] = '@';
+            garden[x][y+1] = '@';
+            garden[x+1][y-1] = '@';
+            garden[x+1][y] = '@';
+            garden[x+1][y+1] = '@';
+        }
+        else if(y > 8)
+        {
+                garden[x][y-1] = '@';
+            garden[x][y+1] = '@';
+            garden[x-1][y-1] = '@';
+            garden[x-1][y]  = '@';
+            garden[x-1][y+1] = '@';
+        }
+        else
+        {
+            garden[x-1][y-1] = '@';
+            garden[x-1][y] = '@';
+            garden[x-1][y+1] = '@';
+            garden[x][y-1] = '@';
+            garden[x][y+1] = '@';
+            garden[x+1][y-1] = '@';
+            garden[x+1][y] = '@';
+            garden[x+1][y+1] = '@';
+	}
+}
+
+int placeFlower(char garden[][10])
+{
+        int row, column;
+        char flower;
+        int bug = rand() % 2;//bug attacks 50% of time
+        //get coordinates
+        printf("\nSelect a row coordinate for flower (0-9): ");
+        row = getCoordinate();//get row coordinate
+        printf("Select a column coordinate for flower (0-9): ");
+        column = getCoordinate();//get column coordinate
+        //get flower choice
+        getchar();
+        printf("\nSelect a flower to place at row[%d], column[%d]\n", row, column);
+        printf("Choices are: Mundane Marigold(M), Bomb Blossom(B), or Radiant Rose(R)\n");
+        printf("Flower: ");
+        flower = getFlower();//get flower
+        //determine outcome
+        printf("\n\t\tOUTCOME\n");
+        switch (flower)
+        {
+                case 'M': //Mundane Marigold
+                {
+                        if(garden[row][column] == ',')
+                        {
+                                points = 1;//add 1
+                                printf("The Mundane Marigold produced a modest bloom.\nYou received 1 point this turn.\n\t\tEND OUTCOME\n");
+                                garden[row][column] = 'M';//change character in garden
+                        }
+                        else
+                        {
+                                if(bug == 1)//bug attacks
+                                {
+                                        points = 4; //award
+                                        printf("A giant bug attacked the new flower!\nThe Mundane Marigold repeled the attack with its mundane-ness\nThe Mundane Marigold produced a beautiful bloom\nYou received 4 points this turn.\n\t\tEND OUTCOME\n");
+                                }
+                                else
+                                {
+                                        points = 4; //award
+                                        printf("The Mundane Marigold produced a beautiful bloom.\nYou received 4 points this turn.\n\t\tEND OUTCOME\n");
+                                }
+                        garden[row][column] = 'M'; //change character in garden
+                        }
+                        total_points += points;
+                        printf("Total points: %d\n\n", total_points);
+                  return points;
+                } //end case M
+                case 'B': //Bomb Blossom
+                {
+                        if(garden[row][column] == ',')
+                        {
+                                if(rand() % 3 == 0) //dies
+                                {
+                                        searchSurroundings(garden, row, column); //search surroundings
+                                        garden[row][column] = '@'; //change character in garden
+                                        printf("The Bomb Blossom blew up and died.\nYou received %d points this turn\n\t\tEND OUTCOME\n", points);
+                                }
+				else
+                                {
+                                        points = 2; //award points
+                                        printf("The Bomb Blossom produced a modest bloom.\nYou received 2 points this turn\n\t\tEND OUTCOME\n");
+                                        garden[row][column] = 'B'; //change character
+                                        total_points += points;
+                                }
+                        }
+                        else
+                        {
+                                if(bug == 1) //bug attacks
+                                {
+                                        points = 5; //award
+                                        garden[row][column] = '@'; //change character in garden
+                                        printf("A giant bug attacked the new flower!\nThe Bomb Blossom blew up the bug!\nYou received 5 points this turn\n\t\tEND OUTCOME\n");
+                                }
+                                else
+                                {
+                                        points = 3; //award
+                                        garden[row][column] = 'B'; //change character in garden
+                                        printf("The Bomb Blossom produced a beautiful bloom\nYou received 3 points this turn\n\t\tEND OUTCOME\n");
+                                }
+                                total_points += points;
+                        }
+                        //total_points += points;
+                        printf("Total points: %d\n\n", total_points);
+                  return points;
+                }//end case B
+                case 'R'://Radiant Rose
+                {
+                        if(garden[row][column] == ',')
+                        {
+                                if(rand() % 2 == 1)//dies
+                                {
+                                        points = 0;//award
+                                        printf("The Radiant Rose wilted and died in the poor soil\nYou received 0 points this turn\n\t\tEND OUTCOME\n");
+                                        garden[row][column] = '?';//change character in garden
+                                }
+                                else
+                                {
+                                        points = 4;//award
+                                        printf("The Radiant Rose produced a modest bloom\nYou received 4 point this turn\n\t\tEND OUTCOME\n");
+                                        garden[row][column] = 'R';//change character in garden
+                                }
+                        }
+                        else
+                        {
+                                if(bug == 1)//bug attacks
+                                {
+                                        points = 0;//award
+                                        printf("A giant bug attacked the new flower!\nThe Radiant Rose was eaten by the bug!\nYou received 0 points this turn\n\t\tEND OUTCOME\n");
+                                        garden[row][column] = 'X';//change charater in garden
+                                }
+                                else
+                                {
+                                        points = 8;//award
+                                        printf("The Radiant Rose produced a beautiful bloom\nYou received 8 points this turn\n\t\tEND OUTCOME\n");
+                                }
+                        }
+                        total_points += points;
+                        printf("Total points: %d\n\n", total_points);
+                  return points;
+                }//end case R
+        }//end switch
+}//end function

@@ -1,0 +1,219 @@
+/* Connor Kennedy
+ * 12368995
+ * 3/2/2013
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+//function prototypes
+void display_menu();
+int throw_dice();
+int even_odd(int, int);
+int lucky_seven(int, int);
+int guess_number(int, int);
+
+//declare balance
+int balance = 100;
+
+//main
+int main()
+{
+        //declare variables
+        int choice, guess, roll;
+        //start exit loop
+        while (1)
+        {
+                //replace random number
+                srand(time(NULL));
+                //start error checking loop
+                while (1)
+                {
+                        display_menu(); //display menu
+                        scanf("%d", &choice); //get choice
+                        if (choice >= 1 && choice <= 4) //see if choice is within acceptable range
+                                break;
+                        else
+                                printf("\nINCORRECT CHOICE\n");
+                }
+                //start game
+                switch (choice)
+                {
+                        case 1:
+                        {
+                                printf("Take a guess: (1) Even (2) Odd\n");
+                                scanf("%d", &guess);
+                                roll = throw_dice();
+                                even_odd(roll, guess);
+                                break;
+                        }
+                        case 2:
+                        {
+                                printf("Take a guess: (1) Lucky Seven (2) Above 7 (3) Below 7\n");
+                                scanf("%d", &guess);
+                                roll = throw_dice();
+                                lucky_seven(roll, guess);
+                                break;
+                        }
+			case 3:
+                        {
+                                printf("Guess a number: ");
+                                scanf("%d", &guess);
+                                roll = throw_dice();
+                                guess_number(roll, guess);
+                                break;
+                        }
+                        case 4:
+                                return 1;
+                }
+                //make sure balance is not at or below zero
+                if (balance <= 0)
+                {
+                        printf("Oh no! You are out of money!");
+                        return 0;
+                }
+        }
+        return 0;
+}
+
+//display menu
+void display_menu()
+{
+        printf("\nWelcome to the casino!\n");
+        printf("Games you can play:\n (1) Even / Odd\n (2) Lucky Seven\n (3) Guess The Number\n (4) Exit\n");
+        printf("Please select an option: ");
+}
+
+//get sum of two thrown dice
+int throw_dice()
+{
+        int die1, die2, sum;
+        die1 = rand() % 7;
+        die2 = rand() % 7;
+        sum = die1 + die2;
+        return sum;
+}
+
+//even or odd game
+int even_odd(int roll, int guess)
+{
+        int bet, res;
+        res = roll % 2;
+        printf("Enter bet: $");
+        scanf("%d", &bet);
+        switch (guess)
+        {
+                case 1: //number is even
+                {
+                        if (res == 0)
+                        {
+                                printf("Your guess is correct.  The dice's sum is %d\n", roll);
+                                balance += (bet * 2); //add winnings to balance
+                                return 1;
+                        }
+   			else
+                        {
+                                printf("Your guess is incorrect.  The dice's sum is %d\n", roll);
+                                balance -= bet; //subtract losses from balance
+                                return 0;
+                        }
+                }
+                case 2: //number is odd
+                {
+                        if (res == 1)
+                        {
+                                printf("Your guess is correct.  The dice's sum is %d\n", roll);
+                                balance += (bet * 2); //add winnings to balance
+                                return 1;
+                        }
+                        else
+                        {
+                                printf("Your guess is incorrect.  The dice's sum is %d\n", roll);
+                                balance -= bet; //subtract losses from balance
+                                return 0;
+                        }
+                }
+        }
+        return 0;
+
+}
+
+//lucky seven game
+int lucky_seven(int roll, int guess)
+{
+        int bet;
+        printf("Enter bet: $");
+        scanf("%d", &bet);
+        switch (guess)
+        {
+                case 1: //number is 7
+                {
+                        if (roll == 7)
+                        {
+                                printf("Your guess is correct.  The dice's sum is %d\n", roll);
+                                balance += (bet * 7); //add winnings to balance
+                                return 1;
+                        }
+                        else
+                        {
+                                printf("Your guess is incorrect.  The Dice's sum is %d\n", roll);
+                                balance -= bet; //subtract losses from balance
+                                return 0;
+                        }
+                }
+                case 2: //number is greater than 7
+                {
+                        if (roll > 7)
+                        {
+                                printf("Your guess is correct.  The dice's sum is %d\n", roll);
+                                balance += (bet * 2); //add winnings to balance
+                                return 1;
+                        }
+ 			else
+                        {
+                                printf("Your guess is incorrect.  The dice's sum is %d\n", roll);
+                                balance -= bet; //subtract losses from balance
+                                return 0;
+                        }
+                }
+                case 3: //number is less than 7
+                {
+                        if (roll < 7)
+                        {
+                                printf("Your guess is correct.  The dice's sum is %d\n", roll);
+                                balance += (bet * 2); //add winnings to balance
+                                return 1;
+                        }
+                        else
+                        {
+                                printf("Your guess is incorrect.  The dice's sum is %d\n", roll);
+                                balance -= bet; //subtract losses from balance
+                                return 0;
+                        }
+                }
+        }
+        return 0;
+}
+
+//guess a number game
+int guess_number(int roll, int guess)
+{
+        int bet;
+        printf("Enter bet: $"); //get bet
+        scanf("%d", &bet);
+        if (roll == guess)
+        {
+                printf("Your guess is correct. The dice's sum is %d\n", roll);
+                balance += (bet * 5); //add winnings to balance
+                return 1;
+        }
+        else
+        {
+                printf("Your guess is incorrect.  The dice's sum is %d\n", roll);
+                balance -= bet; //subtract losses from balance
+                return 0;
+        }
+        return 0;
+
+}
